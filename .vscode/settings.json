@@ -4,9 +4,8 @@
   "less.lint.unknownAtRules": "ignore",
   "files.associations": {
     "*.css": "tailwindcss",
-    "static.yml": "plaintext",
-    "**/.github/workflows/*.yml": "plaintext",
-    "**/.github/workflows/*.yaml": "plaintext"
+    "**/.github/workflows/*.yml": "yaml",
+    "**/.github/workflows/*.yaml": "yaml"
   },
   "yaml.validate": false,
   "yaml.schemaStore.enable": false,
