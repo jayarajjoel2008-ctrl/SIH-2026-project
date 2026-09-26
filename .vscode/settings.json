@@ -3,7 +3,10 @@
   "scss.lint.unknownAtRules": "ignore",
   "less.lint.unknownAtRules": "ignore",
   "files.associations": {
-    "*.css": "tailwindcss"
+    "*.css": "tailwindcss",
+    "static.yml": "plaintext",
+    "**/.github/workflows/*.yml": "plaintext",
+    "**/.github/workflows/*.yaml": "plaintext"
   },
   "yaml.validate": false,
   "yaml.schemaStore.enable": false,
