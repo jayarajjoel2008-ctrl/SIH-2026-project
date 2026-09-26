@@ -10,5 +10,9 @@
   "yaml.validate": false,
   "yaml.schemaStore.enable": false,
   "yaml.schemas": {},
+  "yaml.disableSchemaDetection": [
+    "**/.github/workflows/*.yml",
+    "**/.github/workflows/*.yaml"
+  ],
   "github-actions.workflows.pinnedVersionWarning": false
 }
