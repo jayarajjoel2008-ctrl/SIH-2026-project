@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
-import { Brain, Bot, ShieldCheck, Zap, Phone, AlertCircle, Stethoscope, ArrowRight, Activity, Lock, HeartHandshake } from "lucide-react";
+import { Brain, Bot, ShieldCheck, Zap, Phone, AlertCircle, Stethoscope, ArrowRight, Activity, Lock, HeartHandshake, ChevronDown } from "lucide-react";
 import SiteNav from "@/components/SiteNav";
 import Chatbot from "@/components/Chatbot";
 import EmergencyModal from "@/components/EmergencyModal";
