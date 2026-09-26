@@ -17,8 +17,17 @@ export function safeReturnTo(defaultFallback = null) {
     for (const p of ["access_token", "clear_access_token", "app_id", "app_base_url", "functions_version", "from_url"]) {
       url.searchParams.delete(p);
     }
-    const path = url.pathname + url.search;
+    let path = url.pathname + url.search;
     if (!path.startsWith("/") || path.startsWith("//") || path.includes("\\")) return defaultFallback;
+
+    const base = import.meta.env.BASE_URL;
+    if (base && base !== "/" && base !== "./") {
+      const normalizedBase = base.endsWith("/") ? base.slice(0, -1) : base;
+      if (path.startsWith(normalizedBase)) {
+        path = path.slice(normalizedBase.length) || "/";
+      }
+    }
+
     if (path === "/" || path === "/login" || path === "/auth") return defaultFallback;
     return path;
   } catch {

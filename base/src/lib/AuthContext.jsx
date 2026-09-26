@@ -1,6 +1,7 @@
 import React, { createContext, useState, useContext, useEffect } from 'react';
 import { base44 } from '@/api/base44Client';
 import { appParams } from '@/lib/app-params';
+import { getAppPath } from '@/lib/appPath';
 import { createAxiosClient } from '@base44/sdk/dist/utils/axios-client';
 
 const AuthContext = createContext();
@@ -82,7 +83,7 @@ export const AuthProvider = ({ children }) => {
   };
 
   const navigateToLogin = () => {
-    window.location.href = "/";
+    window.location.href = getAppPath("/");
   };
 
   const isAdmin = Boolean(isAuthenticated && user?.role && String(user.role).toLowerCase() === "admin");

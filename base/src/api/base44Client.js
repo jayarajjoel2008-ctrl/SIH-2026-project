@@ -1,5 +1,6 @@
 import { createClient } from '@base44/sdk';
 import { appParams } from '@/lib/app-params';
+import { getAppPath } from '@/lib/appPath';
 
 const { appId, token, functionsVersion, appBaseUrl } = appParams;
 
@@ -415,7 +416,7 @@ const customAuth = {
     };
     localStorage.setItem("base44_user", JSON.stringify(user));
     localStorage.setItem("base44_access_token", `tok-${Date.now()}`);
-    window.location.href = returnTo || (role === 'admin' ? '/dashboard' : '/home');
+    window.location.href = getAppPath(returnTo || (role === 'admin' ? '/dashboard' : '/home'));
   },
 
   logout(redirectUrl) {
@@ -425,15 +426,11 @@ const customAuth = {
     localStorage.removeItem("base44_user");
     localStorage.removeItem("base44_access_token");
     localStorage.removeItem("token");
-    if (redirectUrl) {
-      window.location.href = redirectUrl;
-    } else {
-      window.location.href = "/";
-    }
+    window.location.href = getAppPath(redirectUrl || "/");
   },
 
   redirectToLogin(returnUrl) {
-    window.location.href = `/login?returnTo=${encodeURIComponent(returnUrl || window.location.pathname)}`;
+    window.location.href = getAppPath(`/login?returnTo=${encodeURIComponent(returnUrl || window.location.pathname)}`);
   },
 
   setToken(token) {
