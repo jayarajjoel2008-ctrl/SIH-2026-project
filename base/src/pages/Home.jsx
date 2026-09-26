@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
-import { Brain, Bot, ShieldCheck, Zap, Phone, AlertCircle, Stethoscope, ArrowRight, Activity, Lock, HeartHandshake, ChevronDown } from "lucide-react";
+import { Brain, Bot, ShieldCheck, Zap, AlertCircle, Stethoscope, ArrowRight, Activity, Lock, HeartHandshake, ChevronDown } from "lucide-react";
 import SiteNav from "@/components/SiteNav";
 import Chatbot from "@/components/Chatbot";
 import EmergencyModal from "@/components/EmergencyModal";
@@ -64,7 +64,7 @@ export default function Home() {
 
       {/* Hero Section Container (Full-bleed doctor background image with dark gradient overlays) */}
       <section
-        className="relative min-h-[calc(100vh-5rem)] w-full overflow-hidden bg-cover bg-center flex flex-col justify-between"
+        className="relative h-[calc(100vh-5rem)] min-h-[560px] w-full overflow-hidden bg-cover bg-center flex flex-col justify-between"
         style={{
           backgroundImage: "url('/hero-doctor.jpg')",
           backgroundColor: "#1E1B4B",
@@ -74,72 +74,72 @@ export default function Home() {
         <div className="absolute inset-0 bg-gradient-to-r from-slate-950/85 via-slate-950/60 to-transparent pointer-events-none" />
         <div className="absolute inset-0 bg-gradient-to-t from-slate-950/70 via-transparent to-slate-950/20 pointer-events-none" />
 
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12 lg:py-14 relative z-10 w-full flex-1 flex flex-col justify-center">
-          <div className="grid md:grid-cols-12 gap-8 lg:gap-12 items-center flex-1 my-auto">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-6 lg:py-8 relative z-10 w-full flex-1 flex flex-col justify-center">
+          <div className="grid md:grid-cols-12 gap-6 lg:gap-10 items-center flex-1 my-auto">
             
             {/* Left Column (span 7): Badge, Title, Subtitle, Buttons, Metric Pill */}
-            <div className="md:col-span-7 lg:col-span-7 space-y-6 sm:space-y-7 text-left">
+            <div className="md:col-span-7 lg:col-span-7 space-y-4 sm:space-y-5 text-left">
               {/* Partner Badge */}
-              <div className="inline-flex items-center gap-2 bg-white/90 backdrop-blur-sm text-[#4E36E2] px-4 py-1.5 rounded-full text-xs font-bold shadow-sm">
+              <div className="inline-flex items-center gap-2 bg-white/90 backdrop-blur-sm text-[#4E36E2] px-3.5 py-1 rounded-full text-xs font-bold shadow-sm">
                 <span className="w-2 h-2 rounded-full bg-[#4E36E2] animate-pulse" />
                 <span>MindPluze · NHAA 14566 Official Partner</span>
               </div>
 
               {/* Headline */}
-              <h1 className="text-4xl sm:text-5xl lg:text-6xl font-black text-white tracking-tight leading-[1.12]">
+              <h1 className="text-3xl sm:text-4xl lg:text-5xl font-black text-white tracking-tight leading-[1.12]">
                 <span className="text-[#B8A5FE] block">AI-Powered</span>
                 <span>Trauma Support</span>
                 <span className="block">for NHAA Victims</span>
               </h1>
 
               {/* Subtitle */}
-              <p className="text-white/90 text-sm sm:text-base lg:text-lg font-medium leading-relaxed max-w-xl">
+              <p className="text-white/90 text-xs sm:text-sm lg:text-base font-medium leading-relaxed max-w-xl">
                 Immediate psychological assessment and crisis intervention for victims of caste-based atrocities. In official coordination with National Helpline Against Atrocities (14566).
               </p>
 
               {/* Buttons */}
-              <div className="flex flex-wrap items-center gap-3.5 pt-2">
+              <div className="flex flex-wrap items-center gap-3 pt-1">
                 <Link
                   to="/assessment"
-                  className="inline-flex items-center gap-2.5 bg-[#4E36E2] hover:bg-[#3C28B6] text-white font-bold px-7 py-3.5 rounded-full shadow-lg shadow-purple-950/40 transition-all hover:scale-[1.02] text-sm sm:text-base cursor-pointer"
+                  className="inline-flex items-center gap-2 bg-[#4E36E2] hover:bg-[#3C28B6] text-white font-bold px-6 py-3 rounded-full shadow-lg shadow-purple-950/40 transition-all hover:scale-[1.02] text-xs sm:text-sm cursor-pointer"
                 >
-                  <Stethoscope className="w-5 h-5" /> Start Assessment
+                  <Stethoscope className="w-4 h-4" /> Start Assessment
                 </Link>
 
                 <button
                   onClick={openChatbot}
-                  className="inline-flex items-center gap-2.5 bg-white/20 hover:bg-white/30 text-white font-bold px-7 py-3.5 rounded-full border border-white/25 backdrop-blur-md transition-all hover:scale-[1.02] text-sm sm:text-base shadow-sm cursor-pointer"
+                  className="inline-flex items-center gap-2 bg-white/20 hover:bg-white/30 text-white font-bold px-6 py-3 rounded-full border border-white/25 backdrop-blur-md transition-all hover:scale-[1.02] text-xs sm:text-sm shadow-sm cursor-pointer"
                 >
-                  <Bot className="w-5 h-5 text-[#FFA07A]" /> Talk to AI Companion
+                  <Bot className="w-4 h-4 text-[#FFA07A]" /> Talk to AI Companion
                 </button>
               </div>
 
               {/* Infographic Metric Card (Bottom Left) */}
-              <div className="pt-2 sm:pt-4">
-                <div className="inline-grid grid-cols-3 gap-6 bg-black/40 backdrop-blur-md border border-white/15 px-6 py-4 rounded-3xl shadow-xl">
+              <div className="pt-1 sm:pt-2">
+                <div className="inline-grid grid-cols-3 gap-5 bg-black/40 backdrop-blur-md border border-white/15 px-5 py-3 rounded-2xl shadow-xl">
                   <div className="text-left">
-                    <p className="text-2xl sm:text-3xl font-black text-white">50K+</p>
-                    <p className="text-[10px] sm:text-[11px] font-bold text-slate-300 uppercase tracking-wider mt-0.5">Screenings</p>
+                    <p className="text-xl sm:text-2xl font-black text-white">50K+</p>
+                    <p className="text-[10px] font-bold text-slate-300 uppercase tracking-wider mt-0.5">Screenings</p>
                   </div>
                   <div className="text-left">
-                    <p className="text-2xl sm:text-3xl font-black text-[#B8A5FE]">98%</p>
-                    <p className="text-[10px] sm:text-[11px] font-bold text-slate-300 uppercase tracking-wider mt-0.5">Accuracy</p>
+                    <p className="text-xl sm:text-2xl font-black text-[#B8A5FE]">98%</p>
+                    <p className="text-[10px] font-bold text-slate-300 uppercase tracking-wider mt-0.5">Accuracy</p>
                   </div>
                   <div className="text-left">
-                    <p className="text-2xl sm:text-3xl font-black text-white">24/7</p>
-                    <p className="text-[10px] sm:text-[11px] font-bold text-slate-300 uppercase tracking-wider mt-0.5">Active Help</p>
+                    <p className="text-xl sm:text-2xl font-black text-white">24/7</p>
+                    <p className="text-[10px] font-bold text-slate-300 uppercase tracking-wider mt-0.5">Active Help</p>
                   </div>
                 </div>
               </div>
             </div>
 
             {/* Right Column (span 5): Floating Badges over doctor */}
-            <div className="md:col-span-5 lg:col-span-5 flex flex-col justify-end items-end h-full pt-8 md:pt-44">
-              <div className="flex flex-wrap gap-3.5 justify-end">
+            <div className="md:col-span-5 lg:col-span-5 flex flex-col justify-end items-end h-full mt-auto pb-2">
+              <div className="flex flex-wrap gap-3 justify-end">
                 {/* Badge 1: 100% Confidential */}
-                <div className="bg-black/50 backdrop-blur-md rounded-2xl shadow-xl border border-white/15 px-4 py-3 flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-xl bg-purple-500/20 text-[#B8A5FE] flex items-center justify-center shadow-xs">
-                    <ShieldCheck className="w-5 h-5" />
+                <div className="bg-black/50 backdrop-blur-md rounded-2xl shadow-xl border border-white/15 px-3.5 py-2.5 flex items-center gap-2.5">
+                  <div className="w-9 h-9 rounded-xl bg-purple-500/20 text-[#B8A5FE] flex items-center justify-center shadow-xs">
+                    <ShieldCheck className="w-4 h-4" />
                   </div>
                   <div>
                     <p className="text-xs font-black text-white">100% Confidential</p>
@@ -148,9 +148,9 @@ export default function Home() {
                 </div>
 
                 {/* Badge 2: Instant SVI Results */}
-                <div className="bg-black/50 backdrop-blur-md rounded-2xl shadow-xl border border-white/15 px-4 py-3 flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-xl bg-orange-500/20 text-[#FFA07A] flex items-center justify-center shadow-xs">
-                    <Zap className="w-5 h-5 fill-[#FFA07A]" />
+                <div className="bg-black/50 backdrop-blur-md rounded-2xl shadow-xl border border-white/15 px-3.5 py-2.5 flex items-center gap-2.5">
+                  <div className="w-9 h-9 rounded-xl bg-orange-500/20 text-[#FFA07A] flex items-center justify-center shadow-xs">
+                    <Zap className="w-4 h-4 fill-[#FFA07A]" />
                   </div>
                   <div>
                     <p className="text-xs font-black text-white">Instant SVI Results</p>
@@ -163,15 +163,15 @@ export default function Home() {
           </div>
         </div>
 
-        {/* Scroll indicator to indicate second page */}
-        <div className="relative z-10 pb-4 flex justify-center">
+        {/* Scroll indicator - absolute so it takes 0 document flow height */}
+        <div className="absolute bottom-2.5 left-1/2 -translate-x-1/2 z-20 hidden sm:flex flex-col items-center pointer-events-auto">
           <button
             onClick={() => document.getElementById("highlights")?.scrollIntoView({ behavior: "smooth" })}
-            className="group flex flex-col items-center gap-1 text-white/70 hover:text-white transition-colors cursor-pointer"
+            className="group flex flex-col items-center gap-0.5 text-white/60 hover:text-white transition-colors cursor-pointer"
             aria-label="Scroll to second page"
           >
-            <span className="text-[10px] sm:text-xs font-bold tracking-widest uppercase opacity-80 group-hover:opacity-100">Scroll to Explore</span>
-            <ChevronDown className="w-4 h-4 animate-bounce text-[#B8A5FE]" />
+            <span className="text-[9px] font-bold tracking-widest uppercase opacity-75 group-hover:opacity-100">Scroll to Explore</span>
+            <ChevronDown className="w-3.5 h-3.5 animate-bounce text-[#B8A5FE]" />
           </button>
         </div>
       </section>
@@ -315,12 +315,6 @@ export default function Home() {
                   className="inline-flex items-center gap-2 bg-[#4E36E2] hover:bg-[#3C28B6] text-white font-bold px-6 py-3 rounded-full transition text-sm shadow-soft-purple"
                 >
                   Visit NHAA Official Portal <ArrowRight className="w-4 h-4" />
-                </a>
-                <a
-                  href="tel:14566"
-                  className="inline-flex items-center gap-2 bg-[#F4F6FB] hover:bg-slate-100 text-[#1E1B4B] font-bold px-6 py-3 rounded-full transition text-sm border border-slate-200"
-                >
-                  <Phone className="w-4 h-4 text-[#FF8C68]" /> Dial 14566 Direct
                 </a>
               </div>
             </div>
