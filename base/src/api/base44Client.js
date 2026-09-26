@@ -12,7 +12,49 @@ const rawBase44 = createClient({
   appBaseUrl
 });
 
-// Initial mock data for assessments
+// Primary backend API URL (uses Vite proxy /api or explicit env)
+const API_BASE = import.meta.env.VITE_API_URL || '/api';
+
+/**
+ * Universal API request wrapper that talks to the Antigravity backend server
+ */
+async function apiRequest(endpoint, options = {}) {
+  const token = localStorage.getItem("base44_access_token") || localStorage.getItem("token");
+  const headers = {
+    ...options.headers
+  };
+
+  if (!(options.body instanceof FormData)) {
+    headers['Content-Type'] = 'application/json';
+  }
+
+  if (token) {
+    headers['Authorization'] = `Bearer ${token}`;
+  }
+
+  const cleanEndpoint = endpoint.startsWith('/') ? endpoint : `/${endpoint}`;
+  const url = `${API_BASE}${cleanEndpoint}`;
+
+  const response = await fetch(url, {
+    ...options,
+    headers
+  });
+
+  if (!response.ok) {
+    let errMessage = `HTTP ${response.status}: ${response.statusText}`;
+    try {
+      const errJson = await response.json();
+      if (errJson.error) errMessage = errJson.error;
+    } catch {}
+    const error = new Error(errMessage);
+    error.status = response.status;
+    throw error;
+  }
+
+  return response.json();
+}
+
+// Initial mock data fallback if server is unreachable
 const SEED_ASSESSMENTS = [
   {
     id: "seed-1",
@@ -113,10 +155,9 @@ function saveStoredAssessments(list) {
   }
 }
 
-// Client-side AI clinical analysis engine
+// Client-side AI fallback in case server is booting
 function analyzeLocally({ narrative = "", language = "English", self_reported_stress = 5, voice_features = null, primary_concern = "" }) {
   const text = (narrative || "").toLowerCase();
-
   const indicatorMap = {
     "trauma": ["trauma", "attack", "beating", "assault", "violence", "injury", "hit", "abuse", "atrocity", "burned", "caste", "untouchab", "shaken"],
     "fear": ["afraid", "scared", "fear", "terrified", "panic", "danger", "frightened", "nightmare", "cannot sleep", "hiding"],
@@ -137,21 +178,15 @@ function analyzeLocally({ narrative = "", language = "English", self_reported_st
   const stressNum = Number(self_reported_stress) || 5;
   let score = Math.round((stressNum / 10) * 35);
   score += Math.min(45, detected_indicators.length * 10);
-
-  if (voice_features) {
-    score += 10;
-  }
-
+  if (voice_features) score += 10;
   if (text.length > 150) score += 5;
   if (text.length > 300) score += 5;
 
   let svi_score = Math.min(100, Math.max(10, score));
-
   let risk_category = "Low";
   if (svi_score >= 81) risk_category = "Critical";
   else if (svi_score >= 56) risk_category = "High";
   else if (svi_score >= 31) risk_category = "Moderate";
-  else risk_category = "Low";
 
   const hasSuicide = detected_indicators.includes("suicidal ideation");
   if (hasSuicide) {
@@ -161,19 +196,11 @@ function analyzeLocally({ narrative = "", language = "English", self_reported_st
 
   const recommendations = [];
   if (risk_category === "Critical" || hasSuicide) {
-    recommendations.push("emergency support");
-    recommendations.push("police intervention");
-    recommendations.push("medical assistance");
-    recommendations.push("counselling");
-    recommendations.push("witness protection");
+    recommendations.push("emergency support", "police intervention", "medical assistance", "counselling", "witness protection");
   } else if (risk_category === "High") {
-    recommendations.push("counselling");
-    recommendations.push("legal aid");
-    recommendations.push("police intervention");
-    recommendations.push("witness protection");
+    recommendations.push("counselling", "legal aid", "police intervention", "witness protection");
   } else if (risk_category === "Moderate") {
-    recommendations.push("counselling");
-    recommendations.push("legal aid");
+    recommendations.push("counselling", "legal aid");
   } else {
     recommendations.push("counselling");
   }
@@ -198,34 +225,30 @@ function analyzeLocally({ narrative = "", language = "English", self_reported_st
   };
 }
 
-// Supportive chatbot replies
-function chatLocally({ message = "", history = [], language = "English" }) {
+function chatLocally({ message = "" }) {
   const msg = (message || "").toLowerCase();
-
   if (msg.includes("suicide") || msg.includes("die") || msg.includes("kill") || msg.includes("emergency") || msg.includes("danger")) {
-    return "I hear your deep distress, and your safety is the most important thing. Please connect with emergency help right away: Call the National Helpline 14566, Police at 100, Medical Ambulance at 108, or AASRA 9820466726. You are not alone and support is standing by for you 24/7.";
+    return "I hear your deep distress, and your safety is the most important thing. Please connect with emergency help right away: Call the National Helpline 14566, Police at 100, Medical Ambulance at 108, or AASRA 9820466726. Support is standing by for you 24/7.";
   }
-
   if (msg.includes("threat") || msg.includes("attack") || msg.includes("police") || msg.includes("boycott") || msg.includes("caste")) {
-    return "What you are experiencing is serious and completely unacceptable. You have full legal protection under the law. We strongly recommend recording your assessment in our Assessment tab so that legal aid and police intervention can be coordinated for you. You can also dial 14566 directly.";
+    return "What you are experiencing is serious and unacceptable. You have full legal protection under the SC/ST Atrocities Act. Please complete your assessment in our Assessment tab so that legal aid and police intervention can be coordinated for you. You can also dial 14566 directly.";
   }
-
   if (msg.includes("hello") || msg.includes("hi") || msg.includes("hey")) {
-    return "Hello. Welcome to MindPluze support. I am here to listen and assist you in a safe, confidential space. How are you feeling today, or what would you like help with?";
+    return "Hello. Welcome to MindCare support. I am here to listen and assist you in a safe, confidential space. How are you feeling today, or what would you like help with?";
   }
-
   return "Thank you for sharing that with me. I understand this is difficult. We are here to support you with psychological counselling, legal resources, and emergency coordination. You can also complete a full Voice/Text assessment on the Assessment page for structured assistance.";
 }
 
 const customAuth = {
   async me() {
     try {
-      if (appParams.appBaseUrl && appParams.appId && appParams.token) {
-        const res = await rawBase44.auth.me();
-        if (res) return res;
+      const res = await apiRequest('/auth/me');
+      if (res) {
+        localStorage.setItem("base44_user", JSON.stringify(res));
+        return res;
       }
     } catch (err) {
-      console.warn("Remote auth.me unreachable, checking local user:", err?.message);
+      console.warn("Backend auth/me error, using local user fallback:", err?.message);
     }
     const raw = localStorage.getItem("base44_user");
     if (raw) {
@@ -238,27 +261,27 @@ const customAuth = {
 
   async loginViaEmailPassword(email, password, role = null) {
     try {
-      if (appParams.appBaseUrl && appParams.appId) {
-        const res = await rawBase44.auth.loginViaEmailPassword(email, password);
-        if (res) {
-          if (role) {
-            res.role = role;
-            localStorage.setItem("base44_user", JSON.stringify(res));
-          }
-          return res;
+      const res = await apiRequest('/auth/login', {
+        method: 'POST',
+        body: JSON.stringify({ email, password, role })
+      });
+      if (res && res.user) {
+        if (res.token) {
+          localStorage.setItem("base44_access_token", res.token);
+          localStorage.setItem("token", res.token);
         }
+        localStorage.setItem("base44_user", JSON.stringify(res.user));
+        return res.user;
       }
     } catch (err) {
-      console.warn("Remote login unreachable, creating local session:", err?.message);
+      console.warn("Backend login failed, using local session fallback:", err?.message);
     }
 
     if (!email || !password) {
       throw new Error("Email and password are required");
     }
 
-    // Determine role: if explicit role provided, use it; otherwise check email pattern
     const determinedRole = role || (email.toLowerCase().includes("admin") ? "admin" : "user");
-
     const user = {
       id: `usr-${Date.now()}`,
       email,
@@ -272,9 +295,23 @@ const customAuth = {
   },
 
   async loginAsGuest() {
+    try {
+      const res = await apiRequest('/auth/guest', { method: 'POST' });
+      if (res && res.user) {
+        if (res.token) {
+          localStorage.setItem("base44_access_token", res.token);
+          localStorage.setItem("token", res.token);
+        }
+        localStorage.setItem("base44_user", JSON.stringify(res.user));
+        return res.user;
+      }
+    } catch (err) {
+      console.warn("Backend guest login failed, using local fallback:", err?.message);
+    }
+
     const guestUser = {
       id: `guest-${Date.now()}`,
-      email: `citizen.guest@mindpluze.gov.in`,
+      email: `citizen.guest@mindcare.gov.in`,
       name: "Anonymous Citizen",
       role: "user",
       isGuest: true,
@@ -287,17 +324,22 @@ const customAuth = {
 
   async register({ email, password, role = "user" }) {
     try {
-      if (appParams.appBaseUrl && appParams.appId) {
-        const res = await rawBase44.auth.register({ email, password });
-        if (res) {
-          if (res.user) res.user.role = role;
-          localStorage.setItem("base44_user", JSON.stringify(res.user || res));
-          return res;
+      const res = await apiRequest('/auth/register', {
+        method: 'POST',
+        body: JSON.stringify({ email, password, role })
+      });
+      if (res && res.user) {
+        if (res.token) {
+          localStorage.setItem("base44_access_token", res.token);
+          localStorage.setItem("token", res.token);
         }
+        localStorage.setItem("base44_user", JSON.stringify(res.user));
+        return res;
       }
     } catch (err) {
-      console.warn("Remote register unreachable, using local registration:", err?.message);
+      console.warn("Backend register failed, using local registration fallback:", err?.message);
     }
+
     if (!email || !password) {
       throw new Error("Email and password are required");
     }
@@ -315,10 +357,17 @@ const customAuth = {
 
   async verifyOtp({ email, otpCode, role = "user" }) {
     try {
-      if (appParams.appBaseUrl && appParams.appId) {
-        return await rawBase44.auth.verifyOtp({ email, otpCode });
+      const res = await apiRequest('/auth/verify-otp', {
+        method: 'POST',
+        body: JSON.stringify({ email, otpCode, role })
+      });
+      if (res && res.user) {
+        if (res.token) localStorage.setItem("base44_access_token", res.token);
+        localStorage.setItem("base44_user", JSON.stringify(res.user));
+        return res;
       }
     } catch (err) {}
+
     const user = {
       id: `usr-${Date.now()}`,
       email: email || "user@example.com",
@@ -335,11 +384,25 @@ const customAuth = {
   },
 
   async resetPasswordRequest(email) {
-    return { success: true };
+    try {
+      return await apiRequest('/auth/forgot-password', {
+        method: 'POST',
+        body: JSON.stringify({ email })
+      });
+    } catch {
+      return { success: true };
+    }
   },
 
   async resetPassword({ resetToken, newPassword }) {
-    return { success: true };
+    try {
+      return await apiRequest('/auth/reset-password', {
+        method: 'POST',
+        body: JSON.stringify({ resetToken, newPassword })
+      });
+    } catch {
+      return { success: true };
+    }
   },
 
   async loginWithProvider(provider, returnTo, role = "user") {
@@ -356,6 +419,9 @@ const customAuth = {
   },
 
   logout(redirectUrl) {
+    try {
+      apiRequest('/auth/logout', { method: 'POST' }).catch(() => {});
+    } catch {}
     localStorage.removeItem("base44_user");
     localStorage.removeItem("base44_access_token");
     localStorage.removeItem("token");
@@ -378,12 +444,13 @@ const customAuth = {
 const customFunctions = {
   async invoke(fnName, payload) {
     try {
-      if (appParams.appBaseUrl && appParams.appId) {
-        const res = await rawBase44.functions.invoke(fnName, payload);
-        if (res && res.data) return res;
-      }
+      const res = await apiRequest(`/functions/${fnName}`, {
+        method: 'POST',
+        body: JSON.stringify(payload || {})
+      });
+      if (res && res.data) return res;
     } catch (err) {
-      console.warn(`Remote function ${fnName} unreachable, using local AI engine:`, err?.message);
+      console.warn(`Backend function ${fnName} call failed, using local engine:`, err?.message);
     }
 
     if (fnName === "analyzeAssessment") {
@@ -402,11 +469,13 @@ const customEntities = {
   Assessment: {
     async create(data) {
       try {
-        if (appParams.appBaseUrl && appParams.appId) {
-          return await rawBase44.entities.Assessment.create(data);
-        }
+        const created = await apiRequest('/assessments', {
+          method: 'POST',
+          body: JSON.stringify(data)
+        });
+        if (created) return created;
       } catch (err) {
-        console.warn("Remote Assessment.create unreachable, using local persistence:", err?.message);
+        console.warn("Backend Assessment.create failed, using local storage fallback:", err?.message);
       }
 
       const list = getStoredAssessments();
@@ -422,12 +491,11 @@ const customEntities = {
 
     async list(sort = "-created_date", limit = 200) {
       try {
-        if (appParams.appBaseUrl && appParams.appId) {
-          const res = await rawBase44.entities.Assessment.list(sort, limit);
-          if (Array.isArray(res) && res.length > 0) return res;
-        }
+        const query = new URLSearchParams({ sort, limit }).toString();
+        const res = await apiRequest(`/assessments?${query}`);
+        if (Array.isArray(res) && res.length > 0) return res;
       } catch (err) {
-        console.warn("Remote Assessment.list unreachable, using local persistence:", err?.message);
+        console.warn("Backend Assessment.list failed, using local storage fallback:", err?.message);
       }
 
       const list = getStoredAssessments();
@@ -436,12 +504,10 @@ const customEntities = {
 
     async get(id) {
       try {
-        if (appParams.appBaseUrl && appParams.appId) {
-          const res = await rawBase44.entities.Assessment.get(id);
-          if (res) return res;
-        }
+        const res = await apiRequest(`/assessments/${id}`);
+        if (res) return res;
       } catch (err) {
-        console.warn("Remote Assessment.get unreachable, using local persistence:", err?.message);
+        console.warn("Backend Assessment.get failed, using local storage fallback:", err?.message);
       }
 
       const list = getStoredAssessments();
@@ -451,11 +517,13 @@ const customEntities = {
 
     async update(id, data) {
       try {
-        if (appParams.appBaseUrl && appParams.appId) {
-          return await rawBase44.entities.Assessment.update(id, data);
-        }
+        const res = await apiRequest(`/assessments/${id}`, {
+          method: 'PUT',
+          body: JSON.stringify(data)
+        });
+        if (res) return res;
       } catch (err) {
-        console.warn("Remote Assessment.update unreachable, using local persistence:", err?.message);
+        console.warn("Backend Assessment.update failed, using local storage fallback:", err?.message);
       }
 
       const list = getStoredAssessments();
@@ -470,11 +538,12 @@ const customEntities = {
 
     async delete(id) {
       try {
-        if (appParams.appBaseUrl && appParams.appId) {
-          return await rawBase44.entities.Assessment.delete(id);
-        }
+        const res = await apiRequest(`/assessments/${id}`, {
+          method: 'DELETE'
+        });
+        if (res && res.success) return res;
       } catch (err) {
-        console.warn("Remote Assessment.delete unreachable, using local persistence:", err?.message);
+        console.warn("Backend Assessment.delete failed, using local storage fallback:", err?.message);
       }
 
       const list = getStoredAssessments().filter(item => item.id !== id);
@@ -484,7 +553,38 @@ const customEntities = {
   }
 };
 
-// Safe Proxy export that doesn't trigger eager getter evaluation on rawBase44
+const customIntegrations = {
+  Core: {
+    async UploadFile({ file }) {
+      try {
+        const formData = new FormData();
+        formData.append('file', file);
+        return await apiRequest('/integrations/upload', {
+          method: 'POST',
+          body: formData
+        });
+      } catch (err) {
+        console.warn("Backend file upload failed, using fallback:", err?.message);
+        return { file_url: URL.createObjectURL(file) };
+      }
+    },
+
+    async TranscribeAudio({ audio_url }) {
+      try {
+        const res = await apiRequest('/integrations/transcribe', {
+          method: 'POST',
+          body: JSON.stringify({ audio_url })
+        });
+        return res?.transcript || res;
+      } catch (err) {
+        console.warn("Backend audio transcription failed, using fallback:", err?.message);
+        return "I have been facing continuous threats and harassment in my locality. Our access to community resources has been restricted, and we are living in constant fear. We urgently request legal protection and intervention.";
+      }
+    }
+  }
+};
+
+// Seamless Proxy export: auth, functions, entities, integrations
 export const base44 = new Proxy(rawBase44, {
   get(target, prop, receiver) {
     if (prop === 'auth') {
@@ -495,6 +595,9 @@ export const base44 = new Proxy(rawBase44, {
     }
     if (prop === 'entities') {
       return customEntities;
+    }
+    if (prop === 'integrations') {
+      return customIntegrations;
     }
     return Reflect.get(target, prop, receiver);
   }

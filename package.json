@@ -3,10 +3,18 @@
   "version": "1.0.0",
   "private": true,
   "scripts": {
-    "dev": "npm run dev --prefix base",
+    "dev": "concurrently -n \"SERVER,CLIENT\" -c \"blue,green\" \"npm run dev --prefix server\" \"npm run dev --prefix base\"",
+    "dev:server": "npm run dev --prefix server",
+    "dev:client": "npm run dev --prefix base",
+    "server": "npm run dev --prefix server",
+    "client": "npm run dev --prefix base",
     "build": "npm run build --prefix base",
+    "start": "npm start --prefix server",
     "lint": "npm run lint --prefix base",
     "typecheck": "npm run typecheck --prefix base",
     "preview": "npm run preview --prefix base"
+  },
+  "devDependencies": {
+    "concurrently": "^9.1.2"
   }
 }

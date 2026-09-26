@@ -1,0 +1,26 @@
+[
+  {
+    "id": "usr-admin-1",
+    "email": "admin@mindcare.gov.in",
+    "password": "admin123",
+    "name": "Helpline Administrator",
+    "role": "admin",
+    "created_date": "2026-08-27T06:29:18.377Z"
+  },
+  {
+    "id": "usr-demo-1",
+    "email": "user@example.com",
+    "password": "user123",
+    "name": "Citizen Complainant",
+    "role": "user",
+    "created_date": "2026-09-11T06:29:18.377Z"
+  },
+  {
+    "id": "usr-demo-2",
+    "email": "ramesh.k@example.com",
+    "password": "password123",
+    "name": "Ramesh K.",
+    "role": "user",
+    "created_date": "2026-09-21T06:29:18.377Z"
+  }
+]
