@@ -64,7 +64,7 @@ export default function Home() {
 
       {/* Hero Section Container (Full-bleed doctor background image with dark gradient overlays) */}
       <section
-        className="relative min-h-[640px] sm:min-h-[720px] lg:min-h-[780px] w-full overflow-hidden bg-cover bg-center flex flex-col justify-between"
+        className="relative min-h-[calc(100vh-5rem)] w-full overflow-hidden bg-cover bg-center flex flex-col justify-between"
         style={{
           backgroundImage: "url('/hero-doctor.jpg')",
           backgroundColor: "#1E1B4B",
@@ -74,8 +74,8 @@ export default function Home() {
         <div className="absolute inset-0 bg-gradient-to-r from-slate-950/85 via-slate-950/60 to-transparent pointer-events-none" />
         <div className="absolute inset-0 bg-gradient-to-t from-slate-950/70 via-transparent to-slate-950/20 pointer-events-none" />
 
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-14 sm:py-20 lg:py-24 relative z-10 w-full flex-1 flex flex-col justify-between">
-          <div className="grid md:grid-cols-12 gap-8 lg:gap-12 items-center flex-1">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12 lg:py-14 relative z-10 w-full flex-1 flex flex-col justify-center">
+          <div className="grid md:grid-cols-12 gap-8 lg:gap-12 items-center flex-1 my-auto">
             
             {/* Left Column (span 7): Badge, Title, Subtitle, Buttons, Metric Pill */}
             <div className="md:col-span-7 lg:col-span-7 space-y-6 sm:space-y-7 text-left">
@@ -115,7 +115,7 @@ export default function Home() {
               </div>
 
               {/* Infographic Metric Card (Bottom Left) */}
-              <div className="pt-4">
+              <div className="pt-2 sm:pt-4">
                 <div className="inline-grid grid-cols-3 gap-6 bg-black/40 backdrop-blur-md border border-white/15 px-6 py-4 rounded-3xl shadow-xl">
                   <div className="text-left">
                     <p className="text-2xl sm:text-3xl font-black text-white">50K+</p>
@@ -134,7 +134,7 @@ export default function Home() {
             </div>
 
             {/* Right Column (span 5): Floating Badges over doctor */}
-            <div className="md:col-span-5 lg:col-span-5 flex flex-col justify-end items-end h-full pt-16 md:pt-48">
+            <div className="md:col-span-5 lg:col-span-5 flex flex-col justify-end items-end h-full pt-8 md:pt-44">
               <div className="flex flex-wrap gap-3.5 justify-end">
                 {/* Badge 1: 100% Confidential */}
                 <div className="bg-black/50 backdrop-blur-md rounded-2xl shadow-xl border border-white/15 px-4 py-3 flex items-center gap-3">
@@ -162,10 +162,22 @@ export default function Home() {
 
           </div>
         </div>
+
+        {/* Scroll indicator to indicate second page */}
+        <div className="relative z-10 pb-4 flex justify-center">
+          <button
+            onClick={() => document.getElementById("highlights")?.scrollIntoView({ behavior: "smooth" })}
+            className="group flex flex-col items-center gap-1 text-white/70 hover:text-white transition-colors cursor-pointer"
+            aria-label="Scroll to second page"
+          >
+            <span className="text-[10px] sm:text-xs font-bold tracking-widest uppercase opacity-80 group-hover:opacity-100">Scroll to Explore</span>
+            <ChevronDown className="w-4 h-4 animate-bounce text-[#B8A5FE]" />
+          </button>
+        </div>
       </section>
 
-      {/* EXECUTIVE SUMMARY / HIGHLIGHTS SECTION */}
-      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+      {/* EXECUTIVE SUMMARY / HIGHLIGHTS SECTION (Second Page) */}
+      <section id="highlights" className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-14 sm:py-20 scroll-mt-20">
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
           {executiveSummary.map((item) => (
             <div
