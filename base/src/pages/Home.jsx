@@ -5,6 +5,7 @@ import SiteNav from "@/components/SiteNav";
 import Chatbot from "@/components/Chatbot";
 import EmergencyModal from "@/components/EmergencyModal";
 import BreatheSection from "@/components/BreatheSection";
+import heroDoctorImage from "@/assets/hero-doctor.jpg";
 
 const executiveSummary = [
   { step: "01", title: "AI Speech & NLP Triage", desc: "Real-time acoustic biomarker and narrative semantic analysis.", tag: "Acoustic AI" },
@@ -66,7 +67,7 @@ export default function Home() {
       <section
         className="relative h-[calc(100vh-5rem)] min-h-[560px] w-full overflow-hidden bg-cover bg-center flex flex-col justify-between"
         style={{
-          backgroundImage: "url('/hero-doctor.jpg')",
+          backgroundImage: `url(${heroDoctorImage})`,
           backgroundColor: "#1E1B4B",
         }}
       >

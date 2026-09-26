@@ -1,0 +1,15 @@
+{
+  "short_name": "MindPluze",
+  "name": "MindPluze - AI Predictive Stress & Trauma Triage",
+  "icons": [
+    {
+      "src": "https://base44.com/logo_v2.svg",
+      "type": "image/svg+xml",
+      "sizes": "192x192 512x512"
+    }
+  ],
+  "start_url": ".",
+  "display": "standalone",
+  "theme_color": "#1E1B4B",
+  "background_color": "#EEF2F8"
+}
