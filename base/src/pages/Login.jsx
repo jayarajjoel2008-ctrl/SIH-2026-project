@@ -102,7 +102,7 @@ export default function Login() {
     try {
       await loginGuest();
       navigate("/home");
-    } catch (err) {
+    } catch {
       setError("Unable to start guest session. Please try again.");
     } finally {
       setGuestLoading(false);

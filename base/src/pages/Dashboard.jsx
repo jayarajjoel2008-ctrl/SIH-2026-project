@@ -181,10 +181,10 @@ export default function Dashboard() {
     }
   ]);
   const [newEventTitle, setNewEventTitle] = useState("");
-  const [newEventTime, setNewEventTime] = useState("10:00 AM");
+  const [newEventTime] = useState("10:00 AM");
   const [newEventCase, setNewEventCase] = useState("");
   const [newEventPriority, setNewEventPriority] = useState("High");
-  const [newEventOfficer, setNewEventOfficer] = useState("Dr. Sarah Collins");
+  const [newEventOfficer] = useState("Dr. Sarah Collins");
   const [showAddEventForm, setShowAddEventForm] = useState(false);
   const [selectedRowIds, setSelectedRowIds] = useState(new Set());
   const [showProfileMenu, setShowProfileMenu] = useState(false);
