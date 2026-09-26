@@ -6,5 +6,6 @@
     "*.css": "tailwindcss"
   },
   "yaml.validate": false,
-  "yaml.schemaStore.enable": false
+  "yaml.schemaStore.enable": false,
+  "github-actions.workflows.pinnedVersionWarning": false
 }
