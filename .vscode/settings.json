@@ -9,5 +9,6 @@
   },
   "yaml.validate": false,
   "yaml.schemaStore.enable": false,
+  "yaml.schemas": {},
   "github-actions.workflows.pinnedVersionWarning": false
 }
