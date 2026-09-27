@@ -20,6 +20,7 @@ import {
   Wind
 } from "lucide-react";
 import { safeReturnTo } from "@/lib/authReturnTo";
+import heroDoctorImage from "@/assets/hero-doctor.jpg";
 
 export default function Login() {
   const [searchParams] = useSearchParams();
@@ -110,46 +111,52 @@ export default function Login() {
   };
 
   return (
-    <div className="min-h-screen w-full bg-[#EEF2F8] text-[#1E1B4B] flex flex-col justify-between relative overflow-hidden py-8 px-4 sm:px-6 lg:px-8">
-      {/* Background Decorative Ambient Glows */}
-      <div className="absolute top-0 left-1/4 w-96 h-96 bg-[#4E36E2]/5 rounded-full blur-3xl pointer-events-none" />
-      <div className="absolute bottom-0 right-1/4 w-96 h-96 bg-[#FFA07A]/10 rounded-full blur-3xl pointer-events-none" />
+    <div
+      className="min-h-screen w-full bg-cover bg-center bg-no-repeat text-[#1E1B4B] flex flex-col justify-between relative overflow-hidden py-8 px-4 sm:px-6 lg:px-8"
+      style={{
+        backgroundImage: `url(${heroDoctorImage})`,
+        backgroundColor: "#1E1B4B",
+      }}
+    >
+      {/* Dark subtle gradient overlay to make text pop while keeping doctor clearly visible - matching front page */}
+      <div className="absolute inset-0 bg-gradient-to-r from-slate-950/80 via-slate-950/50 to-slate-950/30 pointer-events-none" />
+      <div className="absolute inset-0 bg-gradient-to-t from-slate-950/70 via-transparent to-slate-950/20 pointer-events-none" />
 
       {/* Top Header / Portal Branding */}
       <div className="max-w-xl mx-auto w-full flex items-center justify-between z-10 mb-6">
         <Link to="/home" className="flex items-center gap-3 group">
-          <div className="w-11 h-11 rounded-2xl bg-white border border-slate-200/80 shadow-soft flex items-center justify-center text-[#4E36E2] group-hover:scale-105 transition">
-            <Brain className="w-6 h-6 text-[#4E36E2]" />
+          <div className="w-11 h-11 rounded-2xl bg-gradient-to-tr from-[#FF8C68] via-[#FFA07A] to-[#4E36E2] shadow-soft-purple flex items-center justify-center text-white group-hover:scale-105 transition">
+            <Brain className="w-6 h-6 text-white" />
           </div>
           <div>
             <div className="flex items-center gap-2">
-              <span className="font-black text-xl text-[#1E1B4B] tracking-tight">MindPluze</span>
-              <span className="text-[10px] font-bold uppercase tracking-wider bg-purple-50 text-[#4E36E2] border border-[#4E36E2]/20 px-2 py-0.5 rounded-full">
+              <span className="font-black text-xl text-white tracking-tight drop-shadow-sm">MindPluze</span>
+              <span className="text-[10px] font-bold uppercase tracking-wider bg-white/15 text-[#B8A5FE] border border-white/20 px-2 py-0.5 rounded-full backdrop-blur-sm">
                 NHAA 14566
               </span>
             </div>
-            <p className="text-xs text-[#8E95B2] font-semibold">AI-Powered Predictive Stress & Trauma Triage</p>
+            <p className="text-xs text-slate-300 font-semibold drop-shadow-sm">AI-Powered Predictive Stress & Trauma Triage</p>
           </div>
         </Link>
 
         {/* Quick Help Hotline Badge */}
-        <div className="hidden sm:flex items-center gap-2 bg-white border border-slate-200/80 text-slate-700 px-3.5 py-1.5 rounded-full text-xs font-bold shadow-soft">
+        <div className="hidden sm:flex items-center gap-2 bg-slate-900/60 backdrop-blur-md border border-white/15 text-white px-3.5 py-1.5 rounded-full text-xs font-bold shadow-soft">
           <Phone className="w-3.5 h-3.5 text-[#FF8C68] animate-pulse" />
-          <span>Helpline: <strong className="text-[#4E36E2]">14566</strong></span>
+          <span>Helpline: <strong className="text-[#FFA07A]">14566</strong></span>
         </div>
       </div>
 
       {/* Main Authentication Container */}
       <div className="max-w-xl mx-auto w-full z-10">
-        {/* Role Selector Tabs (Soft UI Pill Bar) */}
-        <div className="bg-white p-1.5 rounded-full border border-slate-200/80 flex items-center gap-2 mb-6 shadow-soft">
+        {/* Role Selector Tabs (Soft UI Pill Bar with Glassmorphism) */}
+        <div className="bg-slate-900/60 backdrop-blur-md p-1.5 rounded-full border border-white/15 flex items-center gap-2 mb-6 shadow-xl">
           <button
             type="button"
             onClick={() => handleTabChange("user")}
             className={`flex-1 py-3 px-4 rounded-full font-bold text-xs sm:text-sm transition-all flex items-center justify-center gap-2.5 cursor-pointer ${
               activeTab === "user"
                 ? "bg-[#4E36E2] text-white shadow-soft-purple scale-[1.01]"
-                : "text-[#8E95B2] hover:text-[#1E1B4B] hover:bg-slate-50"
+                : "text-slate-300 hover:text-white hover:bg-white/10"
             }`}
           >
             <User className="w-4 h-4" />
@@ -162,7 +169,7 @@ export default function Login() {
             className={`flex-1 py-3 px-4 rounded-full font-bold text-xs sm:text-sm transition-all flex items-center justify-center gap-2.5 cursor-pointer ${
               activeTab === "admin"
                 ? "bg-[#4E36E2] text-white shadow-soft-purple scale-[1.01]"
-                : "text-[#8E95B2] hover:text-[#1E1B4B] hover:bg-slate-50"
+                : "text-slate-300 hover:text-white hover:bg-white/10"
             }`}
           >
             <Shield className="w-4 h-4" />
@@ -170,8 +177,8 @@ export default function Login() {
           </button>
         </div>
 
-        {/* Card Body (Pure White Soft Card) */}
-        <div className="bg-white rounded-[32px] p-7 sm:p-9 shadow-soft-lg border border-slate-100 transition-all duration-300">
+        {/* Card Body (Pure White Soft Card with subtle glassmorphic backdrop) */}
+        <div className="bg-white/95 backdrop-blur-xl rounded-[32px] p-7 sm:p-9 shadow-2xl border border-white/40 transition-all duration-300">
           {/* Header depending on role */}
           {activeTab === "user" ? (
             <div className="mb-6">
@@ -347,7 +354,7 @@ export default function Login() {
         <div className="text-center mt-6">
           <Link
             to="/home"
-            className="inline-flex items-center gap-2 text-sm font-bold text-[#4E36E2] hover:text-[#3C28B6] bg-white px-5 py-2.5 rounded-full border border-slate-200/80 shadow-soft transition hover:scale-105"
+            className="inline-flex items-center gap-2 text-sm font-bold text-white hover:text-white bg-slate-900/60 hover:bg-slate-900/80 px-5 py-2.5 rounded-full border border-white/20 backdrop-blur-md shadow-lg transition hover:scale-105"
           >
             <span>Explore Public Features & Guidelines</span>
             <ArrowRight className="w-4 h-4 text-[#FF8C68]" />
@@ -356,7 +363,7 @@ export default function Login() {
       </div>
 
       {/* Emergency Footer Banner */}
-      <div className="max-w-xl mx-auto w-full z-10 mt-8 text-center text-xs text-[#8E95B2] font-medium">
+      <div className="max-w-xl mx-auto w-full z-10 mt-8 text-center text-xs text-slate-300 font-medium drop-shadow-sm">
         <p>
           Emergency Triage Partner: National Helpline Against Atrocities (14566) · Ministry of Social Justice & Empowerment
         </p>
