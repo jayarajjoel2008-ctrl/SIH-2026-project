@@ -111,16 +111,19 @@ export default function Login() {
   };
 
   return (
-    <div
-      className="min-h-screen w-full bg-cover bg-center bg-no-repeat text-[#1E1B4B] flex flex-col justify-between relative overflow-hidden py-8 px-4 sm:px-6 lg:px-8"
-      style={{
-        backgroundImage: `url(${heroDoctorImage})`,
-        backgroundColor: "#1E1B4B",
-      }}
-    >
-      {/* Dark subtle gradient overlay to make text pop while keeping doctor clearly visible - matching front page */}
-      <div className="absolute inset-0 bg-gradient-to-r from-slate-950/80 via-slate-950/50 to-slate-950/30 pointer-events-none" />
-      <div className="absolute inset-0 bg-gradient-to-t from-slate-950/70 via-transparent to-slate-950/20 pointer-events-none" />
+    <div className="min-h-screen w-full text-[#1E1B4B] flex flex-col justify-between relative overflow-x-hidden py-8 px-4 sm:px-6 lg:px-8">
+      {/* Fixed Fullscreen Background Image */}
+      <div
+        className="fixed inset-0 w-full h-full bg-cover bg-center bg-no-repeat pointer-events-none z-0"
+        style={{
+          backgroundImage: `url(${heroDoctorImage})`,
+          backgroundColor: "#1E1B4B",
+        }}
+      />
+
+      {/* Dark subtle gradient overlays matching front page */}
+      <div className="fixed inset-0 bg-gradient-to-r from-slate-950/80 via-slate-950/50 to-slate-950/30 pointer-events-none z-0" />
+      <div className="fixed inset-0 bg-gradient-to-t from-slate-950/70 via-transparent to-slate-950/20 pointer-events-none z-0" />
 
       {/* Top Header / Portal Branding */}
       <div className="max-w-xl mx-auto w-full flex items-center justify-between z-10 mb-6">
