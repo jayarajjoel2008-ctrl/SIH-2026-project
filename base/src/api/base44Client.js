@@ -226,18 +226,105 @@ function analyzeLocally({ narrative = "", language = "English", self_reported_st
   };
 }
 
-function chatLocally({ message = "" }) {
+function formatSimpleResponse(text) {
+  if (!text || typeof text !== 'string') return '';
+
+  let cleaned = text
+    .replace(/^#+\s+/gm, '')
+    .replace(/^[-*•]\s+/gm, '')
+    .replace(/^\d+\.\s+/gm, '')
+    .replace(/\*\*(.*?)\*\*/g, '$1')
+    .replace(/\*(.*?)\*/g, '$1')
+    .replace(/_{1,2}(.*?)_{1,2}/g, '$1')
+    .replace(/`{1,3}(.*?)`{1,3}/g, '$1')
+    .trim();
+
+  cleaned = cleaned.replace(/\r?\n+/g, ' ').replace(/\s{2,}/g, ' ').trim();
+
+  cleaned = cleaned
+    .replace(/^(?:sure|certainly|hello|hi|yes|of course|here(?:'s| is)[^:.]*[:.]\s*)/i, '')
+    .trim();
+
+  const sentenceRegex = /[^.!?]+[.!?]+["']?|[^.!?]+$/g;
+  const rawSentences = cleaned.match(sentenceRegex) || [cleaned];
+
+  const sentences = rawSentences
+    .map(s => s.trim())
+    .filter(s => s.length > 0);
+
+  if (sentences.length === 0) return '';
+
+  const selectedSentences = sentences.slice(0, 3);
+  let result = selectedSentences.join(' ');
+
+  if (!/[.!?]$/.test(result)) {
+    result += '.';
+  }
+
+  return result;
+}
+
+async function chatLocally({ message = "", history = [] }) {
+  const groqApiKey = import.meta.env.VITE_GROQ_API_KEY || '';
+  if (groqApiKey && message) {
+    try {
+      const formattedHistory = Array.isArray(history)
+        ? history
+            .filter(m => m && m.content)
+            .slice(-6)
+            .map(m => ({ role: m.role === 'assistant' ? 'assistant' : 'user', content: m.content }))
+        : [];
+
+      const systemPrompt = `You are MindCare AI, a supportive assistant for the MindPluze Predictive Stress & Crisis Support platform (associated with National Helpline 14566).
+Keep your total response simple and compact (strictly 2 to 3 normal-sized sentences, around 35 to 60 words total).
+Use natural, normal-sized sentences (around 12 to 20 words each) with plain everyday words.
+Do NOT use bullet points, numbered lists, asterisks, markdown headers, or overly long run-on sentences.
+For crisis or danger, provide emergency support numbers (NHAA 14566, Police 112, AASRA 9820466726) directly in 2 to 3 clear sentences.`;
+
+      const res = await fetch('https://api.groq.com/openai/v1/chat/completions', {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${groqApiKey}`,
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          model: import.meta.env.VITE_GROQ_MODEL || 'qwen/qwen3.8-27b',
+          messages: [
+            {
+              role: 'system',
+              content: systemPrompt
+            },
+            ...formattedHistory,
+            { role: 'user', content: message }
+          ],
+          temperature: 0.3,
+          max_tokens: 160
+        })
+      });
+
+      if (res.ok) {
+        const data = await res.json();
+        const text = data.choices?.[0]?.message?.content?.trim();
+        if (text) {
+          return formatSimpleResponse(text);
+        }
+      }
+    } catch (e) {
+      console.warn("Client fallback Groq call failed:", e?.message);
+    }
+  }
+
   const msg = (message || "").toLowerCase();
   if (msg.includes("suicide") || msg.includes("die") || msg.includes("kill") || msg.includes("emergency") || msg.includes("danger")) {
-    return "I hear your deep distress, and your safety is the most important thing. Please connect with emergency help right away: Call the National Helpline 14566, Police at 100, Medical Ambulance at 108, or AASRA 9820466726. Support is standing by for you 24/7.";
+    return "Your life matters. Please connect immediately to 24/7 crisis support: National Helpline 14566, AASRA +91 9820466726, or Police 100/112.";
   }
   if (msg.includes("threat") || msg.includes("attack") || msg.includes("police") || msg.includes("boycott") || msg.includes("caste")) {
-    return "What you are experiencing is serious and unacceptable. You have full legal protection under the SC/ST Atrocities Act. Please complete your assessment in our Assessment tab so that legal aid and police intervention can be coordinated for you. You can also dial 14566 directly.";
+    return "Caste-based discrimination and social boycotts are illegal under the SC/ST Act. Call NHAA 14566 or submit an assessment for nodal escalation.";
   }
   if (msg.includes("hello") || msg.includes("hi") || msg.includes("hey")) {
-    return "Hello. Welcome to MindCare support. I am here to listen and assist you in a safe, confidential space. How are you feeling today, or what would you like help with?";
+    return "Hello! I am your MindCare AI Companion. How can I assist or support you today?";
   }
-  return "Thank you for sharing that with me. I understand this is difficult. We are here to support you with psychological counselling, legal resources, and emergency coordination. You can also complete a full Voice/Text assessment on the Assessment page for structured assistance.";
+  return "I am here to assist you with any questions or support you need. How can I help you today?";
 }
 
 const customAuth = {
@@ -455,7 +542,7 @@ const customFunctions = {
       return { data: result };
     }
     if (fnName === "supportChat" || fnName === "supportchat") {
-      const reply = chatLocally(payload || {});
+      const reply = await chatLocally(payload || {});
       return { data: { reply } };
     }
     return { data: {} };

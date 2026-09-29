@@ -7,7 +7,7 @@ export default function Chatbot() {
   const [messages, setMessages] = useState([
     {
       role: "assistant",
-      content: "Hello, I am your MindPluze AI Companion. You are in a safe, confidential space. How can I assist you today?"
+      content: "Hello! I am your AI Companion. You can ask me any question or share what's on your mind."
     },
   ]);
   const [input, setInput] = useState("");

@@ -14,6 +14,8 @@ export const config = {
   jwtSecret: process.env.JWT_SECRET || 'mindcare_default_secret_key_2026',
   clientUrl: process.env.CLIENT_URL || 'http://localhost:5173',
   geminiApiKey: process.env.GEMINI_API_KEY || '',
+  groqApiKey: process.env.GROQ_API_KEY || '',
+  groqModel: process.env.GROQ_MODEL || 'qwen/qwen3.8-27b',
   openaiApiKey: process.env.OPENAI_API_KEY || '',
   dataDir: path.resolve(__dirname, '../../data'),
   uploadDir: path.resolve(__dirname, '../../uploads')
